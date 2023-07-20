@@ -2,6 +2,13 @@ import random
 import time
 import pygame
 
+"""
+66666
+66666
+"""
+
+
+
 def main():
     #颜色初始化
     white = (255,255,255)
