@@ -2,3 +2,6 @@
 *.xml
 .idea/misc.xml
 .idea/RetroSnaker.iml
+.idea/misc.xml
+.idea/RetroSnaker.iml
+*.iml
