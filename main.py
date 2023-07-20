@@ -12,7 +12,7 @@ import pygame
 def main():
     #颜色初始化
     white = (255,255,255)
-    yellow = (255,255,102)
+    yellow = (255,255,0)
     black = (0,0,0)
     green = (0,0,255)
     blue = (0,255,0)
