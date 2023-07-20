@@ -133,8 +133,9 @@ while keep_going:
             keep_going = False
             break
     #创到边缘也寄
-
-
+    if head.row == ROW or head.row == 4 or head.col == COL or head.col == -1:
+        keep_going = False
+        break
 
     # 背景色填充
     screen.fill(bg_color)
