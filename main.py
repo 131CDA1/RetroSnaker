@@ -2,6 +2,7 @@ import pygame
 from pygame.locals import *
 import random
 from point import Point
+from snake import Snake
 
 pygame.init()
 size = width, height = 800, 600
@@ -21,20 +22,20 @@ COL = 40
 # 网格的宽度和高度
 cell_width = width / COL
 cell_height = height / ROW
-# 实例化蛇头
-head = Point(row=ROW / 2, col=COL / 2)
 # 控制和移动
 speed = 1
 direct = 'left'
 
 # 得分
-point = 0
+score = 0
 # 显示文字
 font = pygame.font.SysFont("simhei", 24)
-# 蛇身体
-snakes = []
+
 
 game_over = False
+
+snake = Snake(ROW, COL)
+snake.Snake(speed, direct, score)
 # 生成食物
 def create_food():
     while True:
@@ -42,19 +43,17 @@ def create_food():
         # 是否撞到标志布尔值
         is_coll = False
         # 是否跟蛇碰上了
-        if head.row == pos.row and head.col == pos.col:
+        if snake.head.row == pos.row and snake.head.col == pos.col:
             is_coll = True
         # 蛇的身子是否碰到食物
-        for snake in snakes:
-            if snake.row == pos.row and snake.col == pos.col:
+        for s in snake.snakes:
+            if s.row == pos.row and s.col == pos.col:
                 is_coll = True
                 break
 
         if not is_coll:
             break
     return pos
-
-
 food = create_food()
 
 
@@ -70,7 +69,7 @@ def draw_grid():
                          (c * cell_width, height))
 
 
-# 绘制蛇
+# 绘制点
 def draw_rect(point, color):
     left = point.col * cell_width
     top = point.row * cell_height
@@ -79,75 +78,60 @@ def draw_rect(point, color):
 
 
 while keep_going:
+
+    # 键盘控制
     for event in pygame.event.get():
         if event.type == QUIT:
             keep_going = False
         elif event.type == KEYDOWN:
             if event.key == K_LEFT or event.key == K_a:
-                if direct == 'up' or direct == 'down':
-                    direct = 'left'
+                snake.LEFT()
             elif event.key == K_RIGHT or event.key == K_d:
-                if direct == 'up' or direct == 'down':
-                    direct = 'right'
+                snake.RIGHT()
             elif event.key == K_UP or event.key == K_w:
-                if direct == 'left' or direct == 'right':
-                    direct = 'up'
+                snake.UP()
             elif event.key == K_DOWN or event.key == K_s:
-                if direct == 'left' or direct == 'right':
-                    direct = 'down'
-    # 吃东西
-    eat = (head.row == food.row and head.col == food.col)
+                snake.DOWN()
 
-    if eat:
-        food = create_food()
-        point += 1
-
-    # 处理蛇的身体
-    snakes.insert(0, head.copy())
-
-    if not eat:
-        snakes.pop()
     # 移动
-    if direct == 'left':
-        head.col -= speed
-    elif direct == 'right':
-        head.col += speed
-    elif direct == 'up':
-        head.row -= speed
-    elif direct == 'down':
-        head.row += speed
+    snake.move(food)
+    # 如果吃到食物，就生成新食物
+    if snake.is_crush_food:
+        food = create_food()
 
     #创到身体就寄
-    for snake in snakes:
-        if snake.row == head.row and snake.col == head.col:
-            keep_going = False
-            break
+    if snake.is_crush_body():
+        keep_going = False
+        break
     #创到边缘也寄
-    if head.row == ROW or head.row == 4 or head.col == COL or head.col == -1:
+    if snake.head.row == ROW or snake.head.row == 4 or snake.head.col == COL or snake.head.col == -1:
         keep_going = False
         break
 
     # 背景色填充
     screen.fill(bg_color)
-    # 显示得分
-    l_snakes = len(snakes)
 
-    score_text = "蛇的长度：" + str(l_snakes) + " 得分：" + str(point)
-    score = font.render(score_text, True, (0, 0, 0))
-    score_rect = score.get_rect()
-    score_rect.centerx = screen.get_rect().centerx
-    score_rect.y = 10
-    screen.blit(score, score_rect)
+    # # 显示得分
+    # l_snakes = len(snake.snakes)
+
+    # score_text = "蛇的长度：" + str(l_snakes) + " 得分："a + str(point)
+    # score = font.render(score_text, True, (0, 0, 0))
+    # score_rect = score.get_rect()
+    # score_rect.centerx = screen.get_rect().centerx
+    # score_rect.y = 10
+    # screen.blit(score, score_rect)
+
     # 绘制蛇头
-    draw_rect(head, black)
+    draw_rect(snake.head, black)
     # 绘制蛇的身体
-    for snake in snakes:
-        draw_rect(snake, white)
-
-    # 生成食物
+    for s in snake.snakes:
+        draw_rect(s, white)
+    # 绘制食物
     draw_rect(food, food_color)
     # 绘制网格
     draw_grid()
+
+
     pygame.display.flip()  # 刷新屏幕
     # 帧速率
     clock.tick(10)
