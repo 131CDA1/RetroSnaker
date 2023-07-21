@@ -4,6 +4,17 @@ import random
 from point import Point
 from snake import Snake
 
+
+
+
+
+
+
+
+
+
+
+
 pygame.init()
 size = width, height = 800, 600
 screen = pygame.display.set_mode(size)
@@ -12,13 +23,19 @@ clock = pygame.time.Clock()
 # 游戏循环标志变量
 keep_going = True
 # 颜色
-bg_color = (130, 200, 230)
-white = (255, 255, 255)
-black = (0, 0, 0)  # 蛇身体颜色
+bg_color = (0, 0, 0)
+body_color = (70, 161, 98) #蛇身体颜色
+head_color = (46, 99, 255)  # 蛇头颜色w
 food_color = (255, 0, 0)
+grid_color = (255, 255, 255)
 # 定义格子的行列
 ROW = 30
 COL = 40
+# 游戏地图边长
+side = 24
+# 地图坐标
+x1,x2,y1,y2 = 8, 32, 5, 29
+
 # 网格的宽度和高度
 cell_width = width / COL
 cell_height = height / ROW
@@ -31,7 +48,6 @@ score = 0
 # 显示文字
 font = pygame.font.SysFont("simhei", 24)
 
-
 game_over = False
 
 snake = Snake(ROW, COL)
@@ -39,7 +55,7 @@ snake.Snake(speed, direct, score)
 # 生成食物
 def create_food():
     while True:
-        pos = Point(row=random.randint(5, ROW - 1), col=random.randint(0, COL - 1))
+        pos = Point(row=random.randint(y1,y2 - 1), col=random.randint(x1,x2 - 1))
         # 是否撞到标志布尔值
         is_coll = False
         # 是否跟蛇碰上了
@@ -55,27 +71,22 @@ def create_food():
             break
     return pos
 food = create_food()
-
-
 # 绘制网格
 def draw_grid():
     # 绘制行
-    for r in range(5, ROW):
-        pygame.draw.line(screen, black, (0, r * cell_height),
-                         (width, r * cell_height))
+    for r in range(y1, y2 + 1 ):
+        pygame.draw.line(screen, grid_color, (x1 * cell_height, r * cell_height),
+                         (x2 * cell_height, r * cell_height))
     # 绘制列
-    for c in range(COL):
-        pygame.draw.line(screen, black, (c * cell_width, 100),
-                         (c * cell_width, height))
-
-
+    for c in range(x1, x2 + 1 ):
+        pygame.draw.line(screen, grid_color, (c * cell_width, y1 * cell_height),
+                         (c * cell_width, y2 * cell_height))
 # 绘制点
 def draw_rect(point, color):
     left = point.col * cell_width
     top = point.row * cell_height
     # 绘制
     pygame.draw.rect(screen, color, (left, top, cell_width, cell_height))
-
 
 while keep_going:
 
@@ -86,12 +97,16 @@ while keep_going:
         elif event.type == KEYDOWN:
             if event.key == K_LEFT or event.key == K_a:
                 snake.LEFT()
+                break
             elif event.key == K_RIGHT or event.key == K_d:
                 snake.RIGHT()
+                break
             elif event.key == K_UP or event.key == K_w:
                 snake.UP()
+                break
             elif event.key == K_DOWN or event.key == K_s:
                 snake.DOWN()
+                break
 
     # 移动
     snake.move(food)
@@ -104,7 +119,7 @@ while keep_going:
         keep_going = False
         break
     #创到边缘也寄
-    if snake.head.row == ROW or snake.head.row == 4 or snake.head.col == COL or snake.head.col == -1:
+    if snake.head.row < y1 or snake.head.row > y2 or snake.head.col < x1 or snake.head.col == x2:
         keep_going = False
         break
 
@@ -122,10 +137,10 @@ while keep_going:
     # screen.blit(score, score_rect)
 
     # 绘制蛇头
-    draw_rect(snake.head, black)
+    draw_rect(snake.head, head_color)
     # 绘制蛇的身体
     for s in snake.snakes:
-        draw_rect(s, white)
+        draw_rect(s, body_color)
     # 绘制食物
     draw_rect(food, food_color)
     # 绘制网格
