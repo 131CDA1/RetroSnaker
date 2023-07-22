@@ -109,7 +109,7 @@ while keep_going:
         keep_going = False
         break
     #创到边缘也寄
-    if snake.head.row < y1 or snake.head.row > y2 or snake.head.col < x1 or snake.head.col == x2:
+    if snake.head.row < y1 or snake.head.row >= y2 or snake.head.col < x1 or snake.head.col >= x2:
         keep_going = False
         break
 
