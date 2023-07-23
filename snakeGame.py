@@ -12,7 +12,6 @@ class RetroSnaker:
 
         # 得分
         self.score = 0
-
         pygame.init()
         pygame.display.set_caption("贪吃蛇")
         self.screen = pygame.display.set_mode(self.size)
