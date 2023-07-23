@@ -45,7 +45,7 @@ snake.Snake(speed, direct, score)
 # 生成食物
 def create_food():
     while True:
-        pos = Point(row=random.randint(y1,y2 - 1), col=random.randint(x1,x2 - 1))
+        pos = Point(row=random.randint(0,23), col=random.randint(0,23))
         # 是否撞到标志布尔值
         is_coll = False
         # 是否跟蛇碰上了
@@ -73,8 +73,10 @@ def draw_grid():
                          (c * cell_width, y2 * cell_height))
 # 绘制点
 def draw_rect(point, color):
-    left = point.col * cell_width
-    top = point.row * cell_height
+    row = point.row + y1
+    col = point.col + x1
+    left = col * cell_width
+    top = row * cell_height
     # 绘制
     pygame.draw.rect(screen, color, (left, top, cell_width, cell_height))
 
@@ -109,7 +111,7 @@ while keep_going:
         keep_going = False
         break
     #创到边缘也寄
-    if snake.head.row < y1 or snake.head.row > y2 or snake.head.col < x1 or snake.head.col == x2:
+    if snake.head.row < 0 or snake.head.row > 23 or snake.head.col < 0 or snake.head.col > 23:
         keep_going = False
         break
 

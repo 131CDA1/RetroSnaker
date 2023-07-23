@@ -5,8 +5,6 @@ class Snake:
         :param ROW: 格子的行数
         :param COL: 格子的列数
         """
-        self.ROW = ROW
-        self.COL = COL
         self.is_crush_food = False
     def Snake(self,speed,direct,score):
         """
@@ -20,7 +18,7 @@ class Snake:
         self.score = score
         self.snakes = []
         # 实例化蛇头
-        self.head = Point(row=self.ROW / 2, col=self.COL / 2)
+        self.head = Point(12, 12)
 
     def move(self, food):
         """
