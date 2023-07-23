@@ -6,7 +6,7 @@ class Snake:
         :param COL: 格子的列数
         """
         self.is_crush_food = False
-    def Snake(self,speed,direct,score):
+    def initSnake(self,speed,direct,score):
         """
         :param speed: 蛇移动的速度
         :param direct: 蛇移动的方向
